@@ -1,8 +1,8 @@
 <template>
   <div class="flex">
-    <div id="sidebar1" class="sidebar"></div>
+    <builds-sidebar></builds-sidebar>
     <div id="content">
-      <div id="metadata">
+      <div id="metadata" v-if="build">
         <div id="commit-info">
           <commit :target="build"></commit>
         </div>
@@ -29,8 +29,8 @@
           </thead>
           <tbody>
             <tr v-for="job in jobs" :key="job.id">
-              <td class="info" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
-              <td class="duration" title="in seconds"><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
+              <td class="info" :class="job.state" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
+              <td class="duration"><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
               <td class="os"><os-icon :os="job.os"></os-icon></td>
               <td class="language"><language-icon :language="job.language"></language-icon></td>
               <td class="env can-wrap"><i class="fas fa-cogs"></i>{{ job.env }}</td>
@@ -49,9 +49,16 @@ import Datetime from '../components/Datetime.vue'
 import Duration from '../components/Duration.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
+import BuildsSidebar from '../components/BuildsSidebar.vue'
 
 export default {
   name: 'Build',
+  watch: {
+    '$route' (to, from) {
+      this.$store.commit('reloadBuilds')
+      this.$store.commit('setCurrentBuild', to.params.id)
+    }
+  },
   created: function() {
     this.$store.commit('setCurrentBuild', this.id)
   },
@@ -61,7 +68,7 @@ export default {
     jobs() { return this.$store.state.currentBuildJobs }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon
+    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar
   }
 }
 </script>

@@ -18,8 +18,8 @@
           </thead>
           <tbody>
             <tr v-for="build in builds" :key="build.id" @click="selectBuild(build.id)">
-              <td class="info" :title="build.state"><state-icon :status="build.state"></state-icon>#{{build.number}}</td>
-              <td class="duration" title="in seconds"><duration :start="build.started_at" :finish="build.finished_at"></duration></td>
+              <td class="info" :class="build.state" :title="build.state"><state-icon :status="build.state"></state-icon>#{{build.number}}</td>
+              <td class="duration"><duration :start="build.started_at" :finish="build.finished_at"></duration></td>
               <td class="started"><datetime :value="build.started_at"></datetime></td>
               <td class="commit"><commit :target="build"></commit></td>
             </tr>
