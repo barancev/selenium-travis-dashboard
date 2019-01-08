@@ -18,6 +18,8 @@ const store = new Vuex.Store({
     currentBuild: null,
     currentBuildRef: null,
     currentBuildJobs: [],
+    currentJob: null,
+    currentJobTests: [],
   },
   mutations: {
     reloadBuilds: state => {
@@ -54,17 +56,30 @@ const store = new Vuex.Store({
           )
         }
       )
-    }
+    },
+    setCurrentJob: (state, id) => {
+      state.currentJob = null
+      state.currentJobTests = []
+      dbClient.query(
+        q.Get(q.Match(q.Index("travis_job_by_id"), Number(id)))
+      ).then(
+        result => {
+          state.currentJob = result.data
+        }
+      )
+    },
   }
 })
 
 import App from './App.vue'
 import Builds from './pages/Builds.vue'
 import Build from './pages/Build.vue'
+import Job from './pages/Job.vue'
 
 const routes = [
   { path: '/builds', alias: '/', component: Builds },
   { path: '/build/:id', component: Build },
+  { path: '/job/:id', component: Job },
 ]
 
 const router = new VueRouter({

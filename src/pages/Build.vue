@@ -6,7 +6,7 @@
         <div id="commit-info">
           <commit :target="build"></commit>
         </div>
-        <div id="build-info main-info">
+        <div id="build-info">
           <state-icon :status="build.state"></state-icon><span class="info">Build #{{build.number}}</span>
           <duration :start="build.started_at" :finish="build.finished_at"></duration>
           <datetime :value="build.started_at"></datetime>
@@ -28,7 +28,7 @@
           </tr>
           </thead>
           <tbody>
-            <tr v-for="job in jobs" :key="job.id">
+            <tr v-for="job in jobs" :key="job.id" @click="selectJob(job.id)">
               <td class="info" :class="job.state" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
               <td class="duration"><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
               <td class="os"><os-icon :os="job.os"></os-icon></td>
@@ -69,6 +69,11 @@ export default {
   },
   components: {
     Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar
+  },
+  methods: {
+    selectJob(id) {
+      this.$router.push(`/job/${id}`)
+    }
   }
 }
 </script>
