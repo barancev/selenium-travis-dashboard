@@ -1,28 +1,37 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div id="header">
+      <h1><router-link to="./"><img src="./assets/selenium-logo.png"/>Selenium Travis CI Dashboard</router-link></h1>
+    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
+  name: 'App'
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#header {
+  background-color: #e0e0e0;
+  position: relative;
+  padding: 0 20px;
+}
+
+#header h1 {
+  padding: 10px 0;
+  font-size: 30px;
+}
+
+#header h1 a {
+  text-decoration: none;
+}
+
+#header h1 a img {
+  vertical-align: top;
+  width: 40px;
+  margin-right: 5px;
 }
 </style>
