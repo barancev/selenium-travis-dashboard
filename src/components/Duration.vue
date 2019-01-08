@@ -1,6 +1,6 @@
 <template>
   <span>
-    <i class="far fa-clock"></i>{{duration}}
+    <i class="far fa-clock"></i>{{duration}} sec
   </span>
 </template>
 

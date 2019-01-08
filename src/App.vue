@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="header">
-      <h1><router-link to="./"><img src="./assets/selenium-logo.png"/>Selenium Travis CI Dashboard</router-link></h1>
+      <h1><router-link to="/"><img src="./assets/selenium-logo.png"/>Selenium Travis CI Dashboard</router-link></h1>
     </div>
     <router-view></router-view>
   </div>

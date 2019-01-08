@@ -17,7 +17,7 @@
           </tr>
           </thead>
           <tbody>
-            <tr v-for="build in builds" :key="build.number">
+            <tr v-for="build in builds" :key="build.id" @click="selectBuild(build.id)">
               <td class="info" :title="build.state"><state-icon :status="build.state"></state-icon>#{{build.number}}</td>
               <td class="duration" title="in seconds"><duration :start="build.started_at" :finish="build.finished_at"></duration></td>
               <td class="started"><datetime :value="build.started_at"></datetime></td>
@@ -38,11 +38,19 @@ import Commit from '../components/Commit.vue'
 
 export default {
   name: 'Builds',
+  created: function() {
+    this.$store.commit('reloadBuilds')
+  },
   computed: {
     builds() { return this.$store.state.builds }
   },
   components: {
     StateIcon, Datetime, Duration, Commit
+  },
+  methods: {
+    selectBuild(id) {
+      this.$router.push(`/build/${id}`)
+    }
   }
 }
 </script>
