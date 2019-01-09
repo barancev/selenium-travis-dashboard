@@ -13,7 +13,7 @@ import StateIcon from '../components/StateIcon.vue'
 export default {
   name: 'JobsSidebar',
   created: function() {
-    this.$store.commit('reloadBuilds')
+    //this.$store.commit('reloadBuilds')
   },
   computed: {
     jobs() { return this.$store.state.currentBuildJobs },

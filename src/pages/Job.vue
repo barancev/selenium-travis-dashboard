@@ -29,12 +29,12 @@
           </tr>
           </thead>
           <tbody>
-            <tr v-for="test in tests" :key="test.id">
-              <td :class="test.state" :title="test.state"><state-icon :status="test.state"></state-icon>#{{test.number}}</td>
-              <td><duration :start="test.started_at" :finish="test.finished_at"></duration></td>
-              <td><os-icon :os="test.os"></os-icon></td>
-              <td><language-icon :language="test.language"></language-icon></td>
-              <td><i class="fas fa-cogs"></i>{{ test.env }}</td>
+            <tr v-for="(value, name) in tests" :key="name">
+              <td>{{ name }}</td>
+              <td><span class="passed" v-if="value.passed">{{ value.passed }}</span></td>
+              <td><span class="failed" v-if="value.failed">{{ value.failed }}</span></td>
+              <td><span class="skipped" v-if="value.skipped">{{ value.skipped }}</span></td>
+              <td>{{ value.passed + value.failed + value.skipped }}</td>
             </tr>
           </tbody>
         </table>
@@ -66,7 +66,24 @@ export default {
   computed: {
     id() { return this.$route.params.id },
     job() { return this.$store.state.currentJob },
-    tests() { return this.$store.state.currentJobTests }
+    tests() {
+      var testClasses = {}
+      this.$store.state.currentJobTests.forEach(
+        testRun => {
+          if (! testClasses.hasOwnProperty(testRun.testclass)) {
+            testClasses[testRun.testclass] = {
+              passed: 0, failed: 0, skipped: 0
+            }
+          }
+          if (testRun.result === 'passed') {
+            testClasses[testRun.testclass].passed = 1
+          } else if (testRun.result === 'failed') {
+            testClasses[testRun.testclass].passed = 1
+          }
+        }
+      )
+      return testClasses
+    }
   },
   components: {
     Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, JobsSidebar

@@ -40,7 +40,6 @@ const store = new Vuex.Store({
   },
   actions: {
     reloadBuilds(context) {
-      context.commit('setBuilds', [])
       dbClient.query(
         q.Map(
           q.Paginate(q.Match(q.Index("all_travis_builds"))),
@@ -54,8 +53,6 @@ const store = new Vuex.Store({
     },
     setCurrentBuild(context, id) {
       context.dispatch('reloadBuilds')
-      context.commit('setCurrentBuild', null)
-      context.commit('setCurrentBuildJobs', [])
       dbClient.query(
         q.Get(q.Match(q.Index("travis_build_by_id"), Number(id)))
       ).then(
@@ -75,14 +72,23 @@ const store = new Vuex.Store({
       )
     },
     setCurrentJob(context, id) {
-      context.commit('setCurrentJob', null)
-      context.commit('setCurrentJobTests', [])
+      let job_id = Number(id)
       dbClient.query(
-        q.Get(q.Match(q.Index("travis_job_by_id"), Number(id)))
+        q.Get(q.Match(q.Index("travis_job_by_id"), job_id))
       ).then(
         result => {
           context.commit('setCurrentJob', result.data)
           context.dispatch('setCurrentBuild', result.data.build)
+          dbClient.query(
+            q.Map(
+              q.Paginate(q.Match(q.Index("test_runs_by_job_id"), job_id)),
+              q.Lambda("x", q.Get(q.Var("x")))
+            )
+          ).then(
+            result => {
+              context.commit('setCurrentJobTests', result.data.map(x => x.data))
+            }
+          )
         }
       )
     },
