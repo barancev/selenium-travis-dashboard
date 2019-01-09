@@ -99,11 +99,15 @@ import App from './App.vue'
 import Builds from './pages/Builds.vue'
 import Build from './pages/Build.vue'
 import Job from './pages/Job.vue'
+import TestClass from './pages/TestClass.vue'
+import TestCase from './pages/TestCase.vue'
 
 const routes = [
   { path: '/builds', alias: '/', component: Builds },
   { path: '/build/:id', component: Build },
   { path: '/job/:id', component: Job },
+  { path: '/job/:id/:testclass', component: TestClass },
+  { path: '/job/:id/:testclass/^testcase', component: TestCase },
 ]
 
 const router = new VueRouter({

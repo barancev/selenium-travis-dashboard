@@ -14,27 +14,21 @@
         </div>        
       </div>
       <fieldset>
-        <legend>Job Duration History</legend>
+        <legend>Test Class Duration History</legend>
         <div id="duration-history"></div>
       </fieldset>
-      <div id="table-test-classes">
+      <div id="table-test-cases">
         <table>
           <thead>
           <tr>
-            <th>Test Class</th>
-            <th>Passed</th>
-            <th>Failed</th>
-            <th>Skipped</th>
-            <th>Total</th>
+            <th>Test Case</th>
+            <th>Exception</th>
           </tr>
           </thead>
           <tbody>
-            <tr v-for="(value, name) in tests" :key="name" @click="selectTestClass(name)">
-              <td>{{ name }}</td>
-              <td><span class="passed" v-if="value.passed">{{ value.passed }}</span></td>
-              <td><span class="failed" v-if="value.failed">{{ value.failed }}</span></td>
-              <td><span class="skipped" v-if="value.skipped">{{ value.skipped }}</span></td>
-              <td>{{ value.passed + value.failed + value.skipped }}</td>
+            <tr v-for="test in tests" :key="test.testcase" @click="selectTestCase(test.testcase)">
+              <td :class="test.result"><state-icon :status="test.result"></state-icon>{{ test.testcase }}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -54,7 +48,7 @@ import BuildsSidebar from '../components/BuildsSidebar.vue'
 import JobsSidebar from '../components/JobsSidebar.vue'
 
 export default {
-  name: 'Job',
+  name: 'TestClass',
   watch: {
     '$route' (to, from) {
       this.$store.dispatch('setCurrentJob', to.params.id)
@@ -65,32 +59,20 @@ export default {
   },
   computed: {
     id() { return this.$route.params.id },
+    testclass() { return this.$route.params.testclass },
     job() { return this.$store.state.currentJob },
     tests() {
-      var testClasses = {}
-      this.$store.state.currentJobTests.forEach(
-        testRun => {
-          if (! testClasses.hasOwnProperty(testRun.testclass)) {
-            testClasses[testRun.testclass] = {
-              passed: 0, failed: 0, skipped: 0
-            }
-          }
-          if (testRun.result === 'passed') {
-            testClasses[testRun.testclass].passed = 1
-          } else if (testRun.result === 'failed') {
-            testClasses[testRun.testclass].passed = 1
-          }
-        }
+      return this.$store.state.currentJobTests.filter(
+        testRun => testRun.testclass ===this.testclass
       )
-      return testClasses
     }
   },
   components: {
     Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, JobsSidebar
   },
   methods: {
-    selectTestClass(name) {
-      this.$router.push(`/job/${this.id}/${name}`)
+    selectTestCase(name) {
+      this.$router.push(`/job/${this.id}/${this.testclass}/${name}`)
     }
   }  
 }

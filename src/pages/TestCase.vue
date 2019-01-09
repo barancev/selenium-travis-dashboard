@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     selectTestClass(name) {
-      this.$router.push(`/job/${this.id}/${name}`)
+      this.$router.push(`/job/${this.id}/testclass/${name}`)
     }
   }  
 }

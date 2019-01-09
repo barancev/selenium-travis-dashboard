@@ -77,6 +77,10 @@ td.can-wrap {
   cursor: pointer;
 }
 
+.sidebar ul li.active {
+  font-weight: bold;
+}
+
 .sidebar ul li:hover {
   background-color: #555 !important;
   color: white !important;
