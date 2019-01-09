@@ -13,7 +13,7 @@ import StateIcon from '../components/StateIcon.vue'
 export default {
   name: 'BuildsSidebar',
   created: function() {
-    this.$store.commit('reloadBuilds')
+    this.$store.dispatch('reloadBuilds')
   },
   computed: {
     builds() { return this.$store.state.builds },

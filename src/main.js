@@ -22,7 +22,25 @@ const store = new Vuex.Store({
     currentJobTests: [],
   },
   mutations: {
-    reloadBuilds: state => {
+    setBuilds(state, builds) {
+      state.builds = builds
+    },
+    setCurrentBuild(state, build) {
+      state.currentBuild = build
+    },
+    setCurrentBuildJobs(state, jobs) {
+      state.currentBuildJobs = jobs
+    },
+    setCurrentJob(state, job) {
+      state.currentJob = job
+    },
+    setCurrentJobTests(state, tests) {
+      state.currentJobTests = tests
+    },
+  },
+  actions: {
+    reloadBuilds(context) {
+      context.commit('setBuilds', [])
       dbClient.query(
         q.Map(
           q.Paginate(q.Match(q.Index("all_travis_builds"))),
@@ -30,41 +48,41 @@ const store = new Vuex.Store({
         )
       ).then(
         result => {
-          state.builds = result.data.map(x => x.data)
+          context.commit('setBuilds', result.data.map(x => x.data))
         }
       )
     },
-    setCurrentBuild: (state, id) => {
-      state.currentBuild = null
-      state.currentBuildRef = null
-      state.currentBuildJobs = []
+    setCurrentBuild(context, id) {
+      context.dispatch('reloadBuilds')
+      context.commit('setCurrentBuild', null)
+      context.commit('setCurrentBuildJobs', [])
       dbClient.query(
         q.Get(q.Match(q.Index("travis_build_by_id"), Number(id)))
       ).then(
         result => {
-          state.currentBuild = result.data
-          state.currentBuildRef = result.ref
+          context.commit('setCurrentBuild', result.data)
           dbClient.query(
             q.Map(
-              q.Paginate(q.Match(q.Index("travis_jobs_by_build"), state.currentBuildRef)),
+              q.Paginate(q.Match(q.Index("travis_jobs_by_build_id"), result.data.id)),
               q.Lambda("x", q.Get(q.Var("x")))
             )
           ).then(
             result => {
-              state.currentBuildJobs = result.data.map(x => x.data)
+              context.commit('setCurrentBuildJobs', result.data.map(x => x.data))
             }
           )
         }
       )
     },
-    setCurrentJob: (state, id) => {
-      state.currentJob = null
-      state.currentJobTests = []
+    setCurrentJob(context, id) {
+      context.commit('setCurrentJob', null)
+      context.commit('setCurrentJobTests', [])
       dbClient.query(
         q.Get(q.Match(q.Index("travis_job_by_id"), Number(id)))
       ).then(
         result => {
-          state.currentJob = result.data
+          context.commit('setCurrentJob', result.data)
+          context.dispatch('setCurrentBuild', result.data.build)
         }
       )
     },

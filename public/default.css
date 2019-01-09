@@ -85,7 +85,7 @@ td.can-wrap {
   color: green;
 }
 
-.running {
+.received, .started, .running {
   color: orange;
 }
 

@@ -29,11 +29,11 @@
           </thead>
           <tbody>
             <tr v-for="job in jobs" :key="job.id" @click="selectJob(job.id)">
-              <td class="info" :class="job.state" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
-              <td class="duration"><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
-              <td class="os"><os-icon :os="job.os"></os-icon></td>
-              <td class="language"><language-icon :language="job.language"></language-icon></td>
-              <td class="env can-wrap"><i class="fas fa-cogs"></i>{{ job.env }}</td>
+              <td :class="job.state" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
+              <td><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
+              <td><os-icon :os="job.os"></os-icon></td>
+              <td><language-icon :language="job.language"></language-icon></td>
+              <td class="can-wrap"><i class="fas fa-cogs"></i>{{ job.env }}</td>
             </tr>
           </tbody>
         </table>
@@ -55,12 +55,11 @@ export default {
   name: 'Build',
   watch: {
     '$route' (to, from) {
-      this.$store.commit('reloadBuilds')
-      this.$store.commit('setCurrentBuild', to.params.id)
+      this.$store.dispatch('setCurrentBuild', to.params.id)
     }
   },
   created: function() {
-    this.$store.commit('setCurrentBuild', this.id)
+    this.$store.dispatch('setCurrentBuild', this.id)
   },
   computed: {
     id() { return this.$route.params.id },
