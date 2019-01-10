@@ -53,10 +53,12 @@ export default {
   name: 'Build',
   watch: {
     '$route' (to, from) {
+      this.$store.commit('setCurrentBuildJobs', [])
       this.$store.dispatch('setCurrentBuild', to.params.id)
     }
   },
   created: function() {
+    this.$store.commit('setCurrentBuildJobs', [])
     this.$store.dispatch('setCurrentBuild', this.id)
   },
   computed: {

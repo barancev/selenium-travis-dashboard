@@ -56,10 +56,12 @@ export default {
   name: 'Job',
   watch: {
     '$route' (to, from) {
+      this.$store.commit('setCurrentJobTests', [])
       this.$store.dispatch('setCurrentJob', to.params.id)
     }
   },
   created: function() {
+    this.$store.commit('setCurrentJobTests', [])
     this.$store.dispatch('setCurrentJob', this.id)
   },
   computed: {
