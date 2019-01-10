@@ -16,11 +16,12 @@ const store = new Vuex.Store({
   state: {
     builds: [],
     currentBuild: null,
-    currentBuildRef: null,
     currentBuildJobs: [],
     currentJob: null,
-    currentJobTests: {},
     currentJobHistory: [],
+    currentJobTests: {},
+    currentJobTestClasses: {},
+    currentTestResults: [],
   },
   mutations: {
     setBuilds(state, builds) {
@@ -38,12 +39,18 @@ const store = new Vuex.Store({
     setCurrentJobTests(state, tests) {
       state.currentJobTests = tests
     },
+    setCurrentJobTestClasses(state, testClasses) {
+      state.currentJobTestClasses = testClasses
+    },
     setCurrentJobHistory(state, history) {
       state.currentJobHistory = history
     },
     toggleTestClass(state, name) {
-      state.currentJobTests[name].expanded = ! state.currentJobTests[name].expanded
-    }
+      state.currentJobTestClasses[name].expanded = ! state.currentJobTestClasses[name].expanded
+    },
+    setCurrentTestResults(state, results) {
+      state.currentTestResults = results
+    },
   },
   actions: {
     reloadBuilds(context) {
@@ -131,30 +138,52 @@ const store = new Vuex.Store({
                   }
                 }
               )
-              context.commit('setCurrentJobTests', testClasses)
+              context.commit('setCurrentJobTestClasses', testClasses)
             }
           )
           if (loadJobHistory) {
             context.commit('setCurrentJobHistory', [])
             dbClient.query(
-                q.Map(
-                  q.Paginate(q.Match(q.Index("jobs_by_os_lang_env"), job.os, job.language, job.env[0])),
-                  q.Lambda("x", q.Get(q.Var("x")))
-                )
-              ).then(
-                result => {
-                  var history = result.data.map(x => {
-                    var job = x.data
-                    job.duration = ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000
-                    job.build_number = Number(job.number.split('.')[0])
-                    job.job_number = Number(job.number.split('.')[1])
-                    return job
-                  })
-                  history.sort((a, b) => b.build_number - a.build_number)
-                  context.commit('setCurrentJobHistory', history)
-                }
+              q.Map(
+                q.Paginate(q.Match(q.Index("jobs_by_os_lang_env"), job.os, job.language, job.env[0])),
+                q.Lambda("x", q.Get(q.Var("x")))
               )
+            ).then(
+              result => {
+                var history = result.data.map(x => {
+                  var job = x.data
+                  job.duration = ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000
+                  job.build_number = Number(job.number.split('.')[0])
+                  job.job_number = Number(job.number.split('.')[1])
+                  return job
+                })
+                history.sort((a, b) => b.build_number - a.build_number)
+                context.commit('setCurrentJobHistory', history)
+              }
+            )
           }
+        }
+      )
+    },
+    loadTestResults(context, testcase) {
+      context.commit('setCurrentTestResults', [])
+      let job = context.state.currentJob
+      dbClient.query(
+        q.Map(
+          q.Paginate(
+            q.Intersection(
+              q.Join(
+                q.Match(q.Index("job_ids_by_os_lang_env"), job.os, job.language, job.env[0]),
+                q.Index("test_runs_by_job_id")
+              ),
+              q.Match(q.Index("test_runs_by_class_method"), testcase.testclass, testcase.testcase)
+            )
+          ),
+          q.Lambda("x", q.Get(q.Var("x")))
+        )
+      ).then(
+        result => {
+          context.commit('setCurrentTestResults', result.data.map(x => x.data))
         }
       )
     },
@@ -165,13 +194,11 @@ import App from './App.vue'
 import Builds from './pages/Builds.vue'
 import Build from './pages/Build.vue'
 import Job from './pages/Job.vue'
-import TestCase from './pages/TestCase.vue'
 
 const routes = [
   { path: '/builds', alias: '/', component: Builds },
   { path: '/build/:id', component: Build },
   { path: '/job/:id', component: Job },
-  { path: '/job/:id/:testclass/:testcase', component: TestCase },
 ]
 
 const router = new VueRouter({
