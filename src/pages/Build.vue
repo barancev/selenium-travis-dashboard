@@ -12,7 +12,7 @@
           <datetime :value="build.started_at"></datetime>
         </div>        
       </div>
-      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="builds" :current="id" route-to="/build"></duration-chart>
+      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="chartData" :current="id" route-to="/build"></duration-chart>
       <div id="table-jobs">
         <table>
           <thead>
@@ -63,7 +63,21 @@ export default {
     builds() { return this.$store.state.builds },
     id() { return Number(this.$route.params.id) },
     build() { return this.$store.state.currentBuild },
-    jobs() { return this.$store.state.currentBuildJobs }
+    jobs() { return this.$store.state.currentBuildJobs },
+    chartData() {
+      var data = this.$store.state.builds.map(
+        build => {
+          return {
+            id: build.id,
+            number: build.number,
+            state: build.state,
+            duration: ((build.finished_at ? new Date(build.finished_at) : now) - new Date(build.started_at)) / 1000,
+          }
+        }
+      )
+      data.reverse()
+      return data
+    }
   },
   components: {
     Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, DurationChart

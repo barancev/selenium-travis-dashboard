@@ -48,11 +48,13 @@ const store = new Vuex.Store({
       ).then(
         result => {
           var now = new Date()
-          context.commit('setBuilds', result.data.map(x => {
+          var builds = result.data.map(x => {
             var build = x.data
             build.duration = ((build.finished_at ? new Date(build.finished_at) : now) - new Date(build.started_at)) / 1000
             return build
-          }))
+          })
+          builds.reverse()
+          context.commit('setBuilds', builds)
         }
       )
     },

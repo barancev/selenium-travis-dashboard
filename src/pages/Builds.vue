@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div id="content">
-      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="builds" route-to="/build"></duration-chart>
+      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="chartData" route-to="/build"></duration-chart>
       <div id="table-builds">
         <table>
           <thead>
@@ -39,7 +39,21 @@ export default {
     this.$store.dispatch('reloadBuilds')
   },
   computed: {
-    builds() { return this.$store.state.builds }
+    builds() { return this.$store.state.builds },
+    chartData() {
+      var data = this.$store.state.builds.map(
+        build => {
+          return {
+            id: build.id,
+            number: build.number,
+            state: build.state,
+            duration: ((build.finished_at ? new Date(build.finished_at) : now) - new Date(build.started_at)) / 1000,
+          }
+        }
+      )
+      data.reverse()
+      return data
+    }
   },
   components: {
     StateIcon, Datetime, Duration, Commit, DurationChart
