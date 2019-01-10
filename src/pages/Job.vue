@@ -25,7 +25,7 @@
         <table>
           <thead>
           <tr>
-            <th>Test Class</th>
+            <th>Test Class / Test Case</th>
             <th>Passed</th>
             <th>Failed</th>
             <th>Skipped</th>
@@ -33,13 +33,25 @@
           </tr>
           </thead>
           <tbody>
-            <tr v-for="(value, name) in tests" :key="name" @click="selectTestClass(name)">
-              <td>{{ name }}</td>
-              <td><span class="passed" v-if="value.passed">{{ value.passed }}</span></td>
-              <td><span class="failed" v-if="value.failed">{{ value.failed }}</span></td>
-              <td><span class="skipped" v-if="value.skipped">{{ value.skipped }}</span></td>
-              <td>{{ value.passed + value.failed + value.skipped }}</td>
-            </tr>
+            <template v-for="(testClass, testClassName) in tests">
+              <tr :class="{ passed: !testClass.failed, failed: testClass.failed }" :key="testClassName" @click="toggleTestClass(testClassName)">
+                <td class="testclass-name">
+                  <span v-show="!testClass.expanded"><i class="fas fa-caret-right"></i></span>
+                  <span v-show="testClass.expanded"><i class="fas fa-caret-down"></i></span>
+                  {{ testClassName }}
+                </td>
+                <td><span class="passed" v-if="testClass.passed">{{ testClass.passed }}</span></td>
+                <td><span class="failed" v-if="testClass.failed">{{ testClass.failed }}</span></td>
+                <td><span class="skipped" v-if="testClass.skipped">{{ testClass.skipped }}</span></td>
+                <td>{{ testClass.passed + testClass.failed + testClass.skipped }}</td>
+              </tr>
+              <template v-for="testcase in testClass.testcases">
+                <tr :class="testcase.result" v-show="testClass.expanded" :key="testcase.testcase" @click="selectTestCase(testcase)">
+                  <td class="testcase-name">{{ testcase.testcase }}</td>
+                  <td colspan="4">{{ testcase.exception }}</td>
+                </tr>
+              </template>
+            </template>
           </tbody>
         </table>
       </div>
@@ -66,35 +78,18 @@ export default {
       this.$store.commit('setCurrentJobTests', [])
       this.$store.commit('setCurrentJobHistory', [])
       this.$store.dispatch('setCurrentJob', { id: to.params.id, loadJobHistory: true })
-    }
+    },
   },
   created: function() {
     this.$store.commit('setCurrentJobTests', [])
-      this.$store.commit('setCurrentJobHistory', [])
+    this.$store.commit('setCurrentJobHistory', [])
     this.$store.dispatch('setCurrentJob', { id: this.id, loadJobHistory: true })
   },
   computed: {
     id() { return Number(this.$route.params.id) },
     build() { return this.$store.state.currentBuild },
     job() { return this.$store.state.currentJob },
-    tests() {
-      var testClasses = {}
-      this.$store.state.currentJobTests.forEach(
-        testRun => {
-          if (! testClasses.hasOwnProperty(testRun.testclass)) {
-            testClasses[testRun.testclass] = {
-              passed: 0, failed: 0, skipped: 0
-            }
-          }
-          if (testRun.result === 'passed') {
-            testClasses[testRun.testclass].passed = 1
-          } else if (testRun.result === 'failed') {
-            testClasses[testRun.testclass].passed = 1
-          }
-        }
-      )
-      return testClasses
-    },
+    tests() { return this.$store.state.currentJobTests },
     chartData() {
       var data = this.$store.state.currentJobHistory.map(
         job => {
@@ -108,14 +103,17 @@ export default {
       )
       data.reverse()
       return data
-    }
+    },
   },
   components: {
     Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, Environment, BuildsSidebar, JobsSidebar, DurationChart
   },
   methods: {
-    selectTestClass(name) {
-      this.$router.push(`/job/${this.id}/${name}`)
+    toggleTestClass(name) {
+      this.$store.commit('toggleTestClass', name)
+    },
+    selectTestCase(testcase) {
+      this.$router.push(`/job/${this.id}/${testcase.testclass}/${testcase.testcase}`)
     }
   }  
 }
@@ -127,5 +125,9 @@ export default {
   margin: 7px;
   padding: 5px;
   border: 1px solid #e0e0e0;
+}
+
+td.testcase-name {
+  padding-left: 30px;  
 }
 </style>

@@ -19,7 +19,7 @@ const store = new Vuex.Store({
     currentBuildRef: null,
     currentBuildJobs: [],
     currentJob: null,
-    currentJobTests: [],
+    currentJobTests: {},
     currentJobHistory: [],
   },
   mutations: {
@@ -41,6 +41,9 @@ const store = new Vuex.Store({
     setCurrentJobHistory(state, history) {
       state.currentJobHistory = history
     },
+    toggleTestClass(state, name) {
+      state.currentJobTests[name].expanded = ! state.currentJobTests[name].expanded
+    }
   },
   actions: {
     reloadBuilds(context) {
@@ -108,7 +111,27 @@ const store = new Vuex.Store({
             )
           ).then(
             result => {
-              context.commit('setCurrentJobTests', result.data.map(x => x.data))
+              var testClasses = {}
+              result.data.forEach(
+                item => {
+                  let testcase = item.data
+                  let testclass = testcase.testclass
+                  if (! testClasses.hasOwnProperty(testclass)) {
+                    testClasses[testclass] = {
+                      testcases: [], passed: 0, failed: 0, skipped: 0, expanded: false
+                    }
+                  }
+                  testClasses[testclass].testcases.push(testcase)
+                  if (testcase.result === 'passed') {
+                    testClasses[testclass].passed = testClasses[testclass].passed + 1
+                  } else if (testcase.result === 'failed') {
+                    testClasses[testclass].failed = testClasses[testclass].failed + 1
+                  } else if (testcase.result === 'skipped') {
+                    testClasses[testclass].skipped = testClasses[testclass].skipped + 1
+                  }
+                }
+              )
+              context.commit('setCurrentJobTests', testClasses)
             }
           )
           if (loadJobHistory) {
@@ -142,15 +165,13 @@ import App from './App.vue'
 import Builds from './pages/Builds.vue'
 import Build from './pages/Build.vue'
 import Job from './pages/Job.vue'
-import TestClass from './pages/TestClass.vue'
 import TestCase from './pages/TestCase.vue'
 
 const routes = [
   { path: '/builds', alias: '/', component: Builds },
   { path: '/build/:id', component: Build },
   { path: '/job/:id', component: Job },
-  { path: '/job/:id/:testclass', component: TestClass },
-  { path: '/job/:id/:testclass/^testcase', component: TestCase },
+  { path: '/job/:id/:testclass/:testcase', component: TestCase },
 ]
 
 const router = new VueRouter({
