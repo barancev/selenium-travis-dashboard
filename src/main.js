@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     currentBuildJobs: [],
     currentJob: null,
     currentJobTests: [],
+    currentJobHistory: [],
   },
   mutations: {
     setBuilds(state, builds) {
@@ -37,6 +38,9 @@ const store = new Vuex.Store({
     setCurrentJobTests(state, tests) {
       state.currentJobTests = tests
     },
+    setCurrentJobHistory(state, history) {
+      state.currentJobHistory = history
+    },
   },
   actions: {
     reloadBuilds(context) {
@@ -53,7 +57,7 @@ const store = new Vuex.Store({
             build.duration = ((build.finished_at ? new Date(build.finished_at) : now) - new Date(build.started_at)) / 1000
             return build
           })
-          builds.reverse()
+          builds.sort((a, b) => Number(b.number) - Number(a.number))
           context.commit('setBuilds', builds)
         }
       )
@@ -73,24 +77,30 @@ const store = new Vuex.Store({
           ).then(
             result => {
               var now = new Date()
-              context.commit('setCurrentBuildJobs', result.data.map(x => {
+              var jobs = result.data.map(x => {
                 var job = x.data
                 job.duration = ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000
+                job.build_number = Number(job.number.split('.')[0])
+                job.job_number = Number(job.number.split('.')[1])
                 return job
-              }))
+              })
+              jobs.sort((a, b) => a.job_number - b.job_number)
+              context.commit('setCurrentBuildJobs', jobs)
             }
           )
         }
       )
     },
-    setCurrentJob(context, id) {
-      let job_id = Number(id)
+    setCurrentJob(context, params) {
+      let job_id = Number(params.id)
+      let loadJobHistory = params.loadJobHistory
       dbClient.query(
         q.Get(q.Match(q.Index("travis_job_by_id"), job_id))
       ).then(
         result => {
-          context.commit('setCurrentJob', result.data)
-          context.dispatch('setCurrentBuild', result.data.build)
+          var job = result.data
+          context.commit('setCurrentJob', job)
+          context.dispatch('setCurrentBuild', job.build)
           dbClient.query(
             q.Map(
               q.Paginate(q.Match(q.Index("test_runs_by_job_id"), job_id)),
@@ -101,6 +111,27 @@ const store = new Vuex.Store({
               context.commit('setCurrentJobTests', result.data.map(x => x.data))
             }
           )
+          if (loadJobHistory) {
+            context.commit('setCurrentJobHistory', [])
+            dbClient.query(
+                q.Map(
+                  q.Paginate(q.Match(q.Index("jobs_by_os_lang_env"), job.os, job.language, job.env[0])),
+                  q.Lambda("x", q.Get(q.Var("x")))
+                )
+              ).then(
+                result => {
+                  var history = result.data.map(x => {
+                    var job = x.data
+                    job.duration = ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000
+                    job.build_number = Number(job.number.split('.')[0])
+                    job.job_number = Number(job.number.split('.')[1])
+                    return job
+                  })
+                  history.sort((a, b) => b.build_number - a.build_number)
+                  context.commit('setCurrentJobHistory', history)
+                }
+              )
+          }
         }
       )
     },

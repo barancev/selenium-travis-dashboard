@@ -18,8 +18,8 @@ body, html {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: 16px;
+  line-height: 1.5;
   font-family: "Roboto",Helvetica,sans-serif;
   background-color: #ffffff;
   -webkit-font-smoothing: antialiased;

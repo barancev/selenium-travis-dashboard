@@ -53,11 +53,11 @@ export default {
   name: 'TestClass',
   watch: {
     '$route' (to, from) {
-      this.$store.dispatch('setCurrentJob', to.params.id)
+      this.$store.dispatch('setCurrentJob', { id: to.params.id })
     }
   },
   created: function() {
-    this.$store.dispatch('setCurrentJob', this.id)
+    this.$store.dispatch('setCurrentJob', { id: this.id })
   },
   computed: {
     id() { return this.$route.params.id },

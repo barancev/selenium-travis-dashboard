@@ -30,7 +30,7 @@
               <td><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
               <td><os-icon :os="job.os"></os-icon></td>
               <td><language-icon :language="job.language"></language-icon></td>
-              <td class="can-wrap"><i class="fas fa-cogs"></i>{{ job.env }}</td>
+              <td class="can-wrap"><environment :env="job.env"></environment></td>
             </tr>
           </tbody>
         </table>
@@ -46,6 +46,7 @@ import Datetime from '../components/Datetime.vue'
 import Duration from '../components/Duration.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
+import Environment from '../components/Environment.vue'
 import BuildsSidebar from '../components/BuildsSidebar.vue'
 import DurationChart from '../components/DurationChart.vue'
 
@@ -82,7 +83,7 @@ export default {
     }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, DurationChart
+    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, Environment, BuildsSidebar, DurationChart
   },
   methods: {
     selectJob(id) {

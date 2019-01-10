@@ -7,14 +7,20 @@
         <div id="commit-info">
           <commit :target="job"></commit>
         </div>
-        <div id="job-info">
+        <div id="build-info" v-if="build">
+          <state-icon :status="build.state"></state-icon><span class="info">Build #{{build.number}}</span>
+          <duration :start="build.started_at" :finish="build.finished_at"></duration>
+          <datetime :value="build.started_at"></datetime>
+        </div>
+        <div id="job-info" v-if="job">
           <state-icon :status="job.state"></state-icon><span class="info">Job #{{job.number}}</span>
+          <duration :start="job.started_at" :finish="job.finished_at"></duration>
           <os-icon :os="job.os"></os-icon>
           <language-icon :language="job.language"></language-icon>
-          <duration :start="job.started_at" :finish="job.finished_at"></duration>
-          <datetime :value="job.started_at"></datetime>
+          <environment :env="job.env"></environment>
         </div>        
       </div>
+      <duration-chart v-if="chartData.length" label="Job" title="Job Duration History" :data="chartData" :current="id" route-to="/job"></duration-chart>
       <div id="table-test-classes">
         <table>
           <thead>
@@ -48,6 +54,7 @@ import Datetime from '../components/Datetime.vue'
 import Duration from '../components/Duration.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
+import Environment from '../components/Environment.vue'
 import BuildsSidebar from '../components/BuildsSidebar.vue'
 import JobsSidebar from '../components/JobsSidebar.vue'
 import DurationChart from '../components/DurationChart.vue'
@@ -57,16 +64,18 @@ export default {
   watch: {
     '$route' (to, from) {
       this.$store.commit('setCurrentJobTests', [])
-      this.$store.dispatch('setCurrentJob', to.params.id)
+      this.$store.commit('setCurrentJobHistory', [])
+      this.$store.dispatch('setCurrentJob', { id: to.params.id, loadJobHistory: true })
     }
   },
   created: function() {
     this.$store.commit('setCurrentJobTests', [])
-    this.$store.dispatch('setCurrentJob', this.id)
+      this.$store.commit('setCurrentJobHistory', [])
+    this.$store.dispatch('setCurrentJob', { id: this.id, loadJobHistory: true })
   },
   computed: {
     id() { return Number(this.$route.params.id) },
-    jobs() { return this.$store.state.currentBuildJobs },
+    build() { return this.$store.state.currentBuild },
     job() { return this.$store.state.currentJob },
     tests() {
       var testClasses = {}
@@ -85,10 +94,24 @@ export default {
         }
       )
       return testClasses
+    },
+    chartData() {
+      var data = this.$store.state.currentJobHistory.map(
+        job => {
+          return {
+            id: job.id,
+            number: job.number,
+            state: job.state,
+            duration: ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000,
+          }
+        }
+      )
+      data.reverse()
+      return data
     }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, JobsSidebar, DurationChart
+    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, Environment, BuildsSidebar, JobsSidebar, DurationChart
   },
   methods: {
     selectTestClass(name) {
