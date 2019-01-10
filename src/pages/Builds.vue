@@ -1,11 +1,7 @@
 <template>
   <div class="flex">
     <div id="content">
-      <div id="metadata"></div>
-      <fieldset>
-        <legend>Build Duration History</legend>
-        <div id="duration-history"></div>
-      </fieldset>
+      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="builds" route-to="/build"></duration-chart>
       <div id="table-builds">
         <table>
           <thead>
@@ -35,6 +31,7 @@ import StateIcon from '../components/StateIcon.vue'
 import Datetime from '../components/Datetime.vue'
 import Duration from '../components/Duration.vue'
 import Commit from '../components/Commit.vue'
+import DurationChart from '../components/DurationChart.vue'
 
 export default {
   name: 'Builds',
@@ -45,7 +42,7 @@ export default {
     builds() { return this.$store.state.builds }
   },
   components: {
-    StateIcon, Datetime, Duration, Commit
+    StateIcon, Datetime, Duration, Commit, DurationChart
   },
   methods: {
     selectBuild(id) {

@@ -47,7 +47,12 @@ const store = new Vuex.Store({
         )
       ).then(
         result => {
-          context.commit('setBuilds', result.data.map(x => x.data))
+          var now = new Date()
+          context.commit('setBuilds', result.data.map(x => {
+            var build = x.data
+            build.duration = ((build.finished_at ? new Date(build.finished_at) : now) - new Date(build.started_at)) / 1000
+            return build
+          }))
         }
       )
     },
@@ -65,7 +70,12 @@ const store = new Vuex.Store({
             )
           ).then(
             result => {
-              context.commit('setCurrentBuildJobs', result.data.map(x => x.data))
+              var now = new Date()
+              context.commit('setCurrentBuildJobs', result.data.map(x => {
+                var job = x.data
+                job.duration = ((job.finished_at ? new Date(job.finished_at) : now) - new Date(job.started_at)) / 1000
+                return job
+              }))
             }
           )
         }

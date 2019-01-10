@@ -9,14 +9,12 @@
         </div>
         <div id="job-info">
           <state-icon :status="job.state"></state-icon><span class="info">Job #{{job.number}}</span>
+          <os-icon :os="job.os"></os-icon>
+          <language-icon :language="job.language"></language-icon>
           <duration :start="job.started_at" :finish="job.finished_at"></duration>
           <datetime :value="job.started_at"></datetime>
         </div>        
       </div>
-      <fieldset>
-        <legend>Job Duration History</legend>
-        <div id="duration-history"></div>
-      </fieldset>
       <div id="table-test-classes">
         <table>
           <thead>
@@ -52,6 +50,7 @@ import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
 import BuildsSidebar from '../components/BuildsSidebar.vue'
 import JobsSidebar from '../components/JobsSidebar.vue'
+import DurationChart from '../components/DurationChart.vue'
 
 export default {
   name: 'Job',
@@ -64,7 +63,8 @@ export default {
     this.$store.dispatch('setCurrentJob', this.id)
   },
   computed: {
-    id() { return this.$route.params.id },
+    id() { return Number(this.$route.params.id) },
+    jobs() { return this.$store.state.currentBuildJobs },
     job() { return this.$store.state.currentJob },
     tests() {
       var testClasses = {}
@@ -86,7 +86,7 @@ export default {
     }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, JobsSidebar
+    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, JobsSidebar, DurationChart
   },
   methods: {
     selectTestClass(name) {

@@ -14,6 +14,64 @@ export default {
 </script>
 
 <style>
+body, html {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  font-family: "Roboto",Helvetica,sans-serif;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
+table {
+  margin: 5px;
+  padding-right: 10px;
+  width: 100%;
+}
+
+tr:hover {
+  background-color: #f0f0ff;
+}
+
+th {
+  background-color: #c8c8ff;
+  padding: 2px 5px;
+  text-align: left;
+}
+
+td {
+  margin: 5px;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 2px 5px;
+  padding-right: 25px;
+  cursor: pointer;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+td.can-wrap {
+  white-space: normal;
+}
+
+.flex {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+.svg-inline--fa {
+  padding: 0px 5px;
+}
+
 #header {
   background-color: #e0e0e0;
   position: relative;
@@ -33,5 +91,56 @@ export default {
   vertical-align: top;
   width: 40px;
   margin-right: 5px;
+}
+
+.sidebar h2 {
+  padding: 5px 0 0 20px;
+  font-size: 16px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 120px;
+}
+
+.sidebar ul li {
+  width: 90px;
+  padding: 0 15px;
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sidebar ul li.active {
+  font-weight: bold;
+}
+
+.sidebar ul li:hover {
+  background-color: #555 !important;
+  color: white !important;
+}
+
+.passed {
+  color: green;
+}
+
+.received, .started, .running {
+  color: orange;
+}
+
+.failed {
+  color: red;
+}
+
+fieldset {
+  border: 1px solid #e8e8e8;
+  margin: 0 7px;
+}
+
+legend {
+  color: #999999;
 }
 </style>

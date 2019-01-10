@@ -12,10 +12,7 @@
           <datetime :value="build.started_at"></datetime>
         </div>        
       </div>
-      <fieldset>
-        <legend>Build Duration History</legend>
-        <div id="duration-history"></div>
-      </fieldset>
+      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="builds" :current="id" route-to="/build"></duration-chart>
       <div id="table-jobs">
         <table>
           <thead>
@@ -50,6 +47,7 @@ import Duration from '../components/Duration.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
 import BuildsSidebar from '../components/BuildsSidebar.vue'
+import DurationChart from '../components/DurationChart.vue'
 
 export default {
   name: 'Build',
@@ -62,12 +60,13 @@ export default {
     this.$store.dispatch('setCurrentBuild', this.id)
   },
   computed: {
-    id() { return this.$route.params.id },
+    builds() { return this.$store.state.builds },
+    id() { return Number(this.$route.params.id) },
     build() { return this.$store.state.currentBuild },
     jobs() { return this.$store.state.currentBuildJobs }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar
+    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, BuildsSidebar, DurationChart
   },
   methods: {
     selectJob(id) {

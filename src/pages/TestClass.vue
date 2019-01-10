@@ -9,6 +9,8 @@
         </div>
         <div id="job-info">
           <state-icon :status="job.state"></state-icon><span class="info">Job #{{job.number}}</span>
+          <os-icon :language="job.os"></os-icon>
+          <language-icon :language="job.language"></language-icon>
           <duration :start="job.started_at" :finish="job.finished_at"></duration>
           <datetime :value="job.started_at"></datetime>
         </div>        
