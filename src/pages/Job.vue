@@ -8,12 +8,12 @@
           <commit :target="build"></commit>
         </div>
         <div id="build-info" v-if="build">
-          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon>Build #{{build.number}}</span>
+          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon><a :href="'https://travis-ci.org/SeleniumHQ/selenium/builds/'+build.id">Build #{{build.number}}</a></span>
           <duration :start="build.started_at" :finish="build.finished_at"></duration>
           <datetime :value="build.started_at"></datetime>
         </div>
         <div id="job-info" v-if="job">
-          <span :class="job.state" class="job-number"><state-icon :target="job"></state-icon>Job #{{job.number}}</span>
+          <span :class="job.state" class="job-number"><state-icon :target="job"></state-icon><a :href="'https://travis-ci.org/SeleniumHQ/selenium/jobs/'+job.id">Job #{{job.number}}</a></span>
           <duration :start="job.started_at" :finish="job.finished_at"></duration>
           <os-icon :os="job.os"></os-icon>
           <language-icon :language="job.language"></language-icon>

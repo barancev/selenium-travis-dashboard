@@ -7,7 +7,7 @@
           <commit :target="build"></commit>
         </div>
         <div id="build-info">
-          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon>Build #{{build.number}}</span>
+          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon><a :href="'https://travis-ci.org/SeleniumHQ/selenium/builds/'+build.id">Build #{{build.number}}</a></span>
           <duration :start="build.started_at" :finish="build.finished_at"></duration>
           <datetime :value="build.started_at"></datetime>
         </div>        
