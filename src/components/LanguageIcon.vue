@@ -1,8 +1,8 @@
 <template>
   <span>
-    <i v-if="language === 'java'" class="fab fa-java"></i>
-    <i v-if="language === 'python'" class="fab fa-python"></i>
-    <i v-if="language === 'ruby'" class="fas fa-gem"></i>
+    <i v-if="language === 'java'" class="fab fa-java fa-fw"></i>
+    <i v-if="language === 'python'" class="fab fa-python fa-fw"></i>
+    <i v-if="language === 'ruby'" class="fas fa-gem fa-fw"></i>
     {{ language }}
   </span>
 </template>

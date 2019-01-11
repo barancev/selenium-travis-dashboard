@@ -2,7 +2,9 @@
   <div id="sidebar1" class="sidebar">
     <h2>Builds</h2>
     <ul id="sidebar-builds">
-      <li v-for="build in builds" :key="build.id" :class="[{ active: build.id === currentBuild.id }, build.state]" @click="selectBuild(build.id)" :title="build.message+' by '+build.author_name+' in '+build.branch"><state-icon :status="build.state"></state-icon>{{build.number}}</li>
+      <li v-for="build in builds" :key="build.id" :class="[{ active: build.id === currentBuild.id }, build.state]" @click="selectBuild(build.id)" :title="build.message+' by '+build.author_name+' in '+build.branch">
+        <state-icon :target="build"></state-icon>{{build.number}}
+      </li>
     </ul>
   </div>
 </template>

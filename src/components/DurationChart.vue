@@ -25,7 +25,11 @@ export default {
   methods: {
     repaint() {
       d3.select('#duration-history').select('svg').remove()
-      var colours = { failed: 'red', passed: 'green' }
+      var colours = {
+        failed: 'red', errored: 'red',
+        started: 'orange', running: 'orange',
+        passed: 'green'
+      }
       var tooltip = d3.select('body').append('div').attr('class', 'toolTip')
 
       var width = this.data.length * 20, height = 100

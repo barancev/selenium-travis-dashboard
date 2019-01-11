@@ -4,16 +4,16 @@
     <jobs-sidebar></jobs-sidebar>
     <div id="content">
       <div id="metadata" v-if="job">
-        <div id="commit-info">
+        <div id="commit-info" v-if="build">
           <commit :target="build"></commit>
         </div>
         <div id="build-info" v-if="build">
-          <state-icon :status="build.state"></state-icon><span class="info">Build #{{build.number}}</span>
+          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon>Build #{{build.number}}</span>
           <duration :start="build.started_at" :finish="build.finished_at"></duration>
           <datetime :value="build.started_at"></datetime>
         </div>
         <div id="job-info" v-if="job">
-          <state-icon :status="job.state"></state-icon><span class="info">Job #{{job.number}}</span>
+          <span :class="job.state" class="job-number"><state-icon :target="job"></state-icon>Job #{{job.number}}</span>
           <duration :start="job.started_at" :finish="job.finished_at"></duration>
           <os-icon :os="job.os"></os-icon>
           <language-icon :language="job.language"></language-icon>
@@ -34,8 +34,8 @@
           </thead>
           <tbody>
             <template v-for="(testClass, testClassName) in testClasses">
-              <tr :class="{ passed: !testClass.failed, failed: testClass.failed }" :key="testClassName" @click="toggleTestClass(testClassName)">
-                <td class="testclass-name">
+              <tr :key="testClassName" @click="toggleTestClass(testClassName)">
+                <td class="testclass-name" :class="{ passed: !testClass.failed, failed: testClass.failed }">
                   <span v-show="!testClass.expanded"><i class="fas fa-caret-right"></i></span>
                   <span v-show="testClass.expanded"><i class="fas fa-caret-down"></i></span>
                   <test-class :name="testClassName"></test-class>
@@ -48,7 +48,7 @@
               <template v-for="testcase in testClass.testcases">
                 <tr :class="testcase.result" v-show="testClass.expanded" :key="testcase.testclass+'.'+testcase.testcase" @click="selectTestCase(testcase)">
                   <td class="testcase-name">{{ testcase.testcase }}</td>
-                  <td colspan="4">{{ testcase.exception }}</td>
+                  <td colspan="4" class="can-wrap">{{ testcase.exception }} {{ testcase.message }}</td>
                 </tr>
               </template>
             </template>
@@ -123,8 +123,24 @@ export default {
       this.showTestResults = true
       this.testcase = testcase
       this.$store.dispatch('loadTestResults', testcase)
+    },
+    refresh() {
+      if (this.$store.state.currentJob) {
+        let state = this.$store.state.currentJob.state
+        if (state === 'pending' || state === 'started' || 'state' === 'running') {
+          this.$store.dispatch('setCurrentJob', { id: this.id })
+        }
+      }
     }
-  }  
+  },  
+  mounted: function() {
+    setInterval(
+      function() {
+        this.refresh()
+      }.bind(this),
+      30000
+    )
+  }
 }
 </script>
 
@@ -138,5 +154,9 @@ export default {
 
 td.testcase-name {
   padding-left: 30px;  
+}
+
+#metadata span {
+  padding-right: 5px;
 }
 </style>

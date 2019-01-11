@@ -1,37 +1,27 @@
 <template>
-  <span>
-    <i v-if="status === 'created'" class="fas fa-hourglass"></i>
-    <i v-if="status === 'pending'" class="fas fa-hourglass"></i>
-    <i v-if="status === 'received'" class="fas fa-hourglass"></i>
-    <i v-if="status === 'started'" class="fas fa-spinner fa-spin"></i>
-    <i v-if="status === 'running'" class="fas fa-spinner fa-spin"></i>
-    <i v-if="status === 'passed'" class="fas fa-check"></i>
-    <i v-if="status === 'failed'" class="fas fa-times"></i>
-    <i v-if="status === 'skipped'" class="fas fa-minus"></i>
-    <i v-if="status === 'canceled'" class="fas fa-ban"></i>
-  </span>
+  <div class="icon">
+    <template v-if="target.state === 'created'"><i class="fas fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'pending'"><i class="fas fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'received'"><i class="fas fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'started'"><i class="fas fa-spinner fa-spin fa-fw"></i></template>
+    <template v-if="target.state === 'running'"><i class="fas fa-spinner fa-spin fa-fw"></i></template>
+    <template v-if="target.state === 'passed'"><i class="fas fa-check fa-fw"></i></template>
+    <template v-if="target.state === 'failed'"><i class="fas fa-times fa-fw"></i></template>
+    <template v-if="target.state === 'errored'"><i class="fas fa-exclamation fa-fw"></i></template>
+    <template v-if="target.state === 'skipped'"><i class="fas fa-minus fa-fw"></i></template>
+    <template v-if="target.state === 'canceled'"><i class="fas fa-ban fa-fw"></i></template>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'StateIcon',
   props: {
-    status: String
-  }
+    target: Object
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.running {
-  color: orange;
-}
-
-.fa-check {
-  color: green;
-}
-
-.fa-times {
-  color: red;
-}
 </style>

@@ -14,7 +14,7 @@
           </thead>
           <tbody>
             <tr v-for="build in builds" :key="build.id" @click="selectBuild(build.id)">
-              <td :class="build.state" :title="build.state"><state-icon :status="build.state"></state-icon>#{{build.number}}</td>
+              <td :class="build.state" :title="build.state"><state-icon :target="build"></state-icon>#{{build.number}}</td>
               <td><duration :start="build.started_at" :finish="build.finished_at"></duration></td>
               <td><datetime :value="build.started_at"></datetime></td>
               <td class="can-wrap"><commit :target="build"></commit></td>
@@ -62,7 +62,20 @@ export default {
   methods: {
     selectBuild(id) {
       this.$router.push(`/build/${id}`)
+    },
+    refresh() {
+      if (this.$store.state.builds.filter(b => b.state === 'pending' || b.state === 'started' || b.state === 'running').length > 0) {
+        this.$store.dispatch('reloadBuilds')
+      }
     }
+  },
+  mounted: function() {
+    setInterval(
+      function() {
+        this.refresh()
+      }.bind(this),
+      30000
+    )
   }
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
-  <span>
-    <i class="fab fa-github"></i>
-    <a :href="target.compare_url">{{target.message}}</a>, by {{target.author_name}} in {{target.branch}}
-  </span>
+  <div class="icon">
+    <i class="fab fa-github fa-fw"></i>
+    <a :href="target.compare_url">{{target.message}}</a>, by {{target.author_name}} in {{target.branch.name}}
+  </div>
 </template>
 
 <script>

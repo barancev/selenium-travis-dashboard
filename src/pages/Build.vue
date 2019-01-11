@@ -7,7 +7,7 @@
           <commit :target="build"></commit>
         </div>
         <div id="build-info">
-          <state-icon :status="build.state"></state-icon><span class="info">Build #{{build.number}}</span>
+          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon>Build #{{build.number}}</span>
           <duration :start="build.started_at" :finish="build.finished_at"></duration>
           <datetime :value="build.started_at"></datetime>
         </div>        
@@ -26,7 +26,7 @@
           </thead>
           <tbody>
             <tr v-for="job in jobs" :key="job.id" @click="selectJob(job.id)">
-              <td :class="job.state" :title="job.state"><state-icon :status="job.state"></state-icon>#{{job.number}}</td>
+              <td :class="job.state" :title="job.state"><state-icon :target="job"></state-icon>{{job.number}}</td>
               <td><duration :start="job.started_at" :finish="job.finished_at"></duration></td>
               <td><os-icon :os="job.os"></os-icon></td>
               <td><language-icon :language="job.language"></language-icon></td>
@@ -89,7 +89,23 @@ export default {
   methods: {
     selectJob(id) {
       this.$router.push(`/job/${id}`)
+    },
+    refresh() {
+      if (this.$store.state.currentBuild) {
+        let state = this.$store.state.currentBuild.state
+        if (state === 'pending' || state === 'started' || 'state' === 'running') {
+          this.$store.dispatch('setCurrentBuild', this.id)
+        }
+      }
     }
+  },
+  mounted: function() {
+    setInterval(
+      function() {
+        this.refresh()
+      }.bind(this),
+      30000
+    )
   }
 }
 </script>
@@ -100,5 +116,9 @@ export default {
   margin: 7px;
   padding: 5px;
   border: 1px solid #e0e0e0;
+}
+
+#metadata span {
+  padding-right: 5px;
 }
 </style>

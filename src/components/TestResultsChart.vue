@@ -17,7 +17,7 @@
             </div>
             <div id="test-result-history"></div>
           </div>
-          <div class="exception">{{ exception }}</div>
+          <div class="exception">{{ testcase.stacktrace }}</div>
 
           <div class="modal-footer"></div>
         </div>
@@ -104,6 +104,7 @@ export default {
 
 .metadata {
   padding: 5px;
+  margin-top: 10px;
   border: 1px solid #e0e0e0;
 }
 
@@ -142,7 +143,7 @@ export default {
 }
 
 .modal-container {
-  width: 600px;
+  width: 800px;
   margin: 0px auto;
   padding: 20px 20px;
   background-color: #fff;
@@ -179,5 +180,11 @@ export default {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.exception {
+  white-space: pre;
+  max-height: 800px;
+  overflow: scroll;
 }
 </style>

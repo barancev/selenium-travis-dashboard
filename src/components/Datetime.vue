@@ -1,6 +1,6 @@
 <template>
   <span>
-    <i class="far fa-calendar"></i>{{value}}
+    <i class="far fa-calendar fa-fw"></i>{{value}}
   </span>
 </template>
 

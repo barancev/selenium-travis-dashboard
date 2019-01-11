@@ -68,8 +68,8 @@ td.can-wrap {
   display: none;
 }
 
-.svg-inline--fa {
-  padding: 0px 5px;
+.fas, .fab, .far {
+  padding-right: 5px;
 }
 
 #header {
@@ -127,11 +127,15 @@ td.can-wrap {
   color: green;
 }
 
-.received, .started, .running {
+.started, .running {
   color: orange;
 }
 
-.failed {
+.skipped {
+  color: #c0c0c0;
+}
+
+.failed, .errored {
   color: red;
 }
 
@@ -142,5 +146,9 @@ fieldset {
 
 legend {
   color: #999999;
+}
+
+div.icon {
+  display: inline;
 }
 </style>
