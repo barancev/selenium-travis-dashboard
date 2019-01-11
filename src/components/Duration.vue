@@ -14,7 +14,7 @@ export default {
   computed: {
     duration: function() {
       let startDate = Date.parse(this.start)
-      let finishDate = Date.parse(this.finish)
+      let finishDate = this.finish ? Date.parse(this.finish) : new Date()
       return (finishDate - startDate) / 1000
     }
   }

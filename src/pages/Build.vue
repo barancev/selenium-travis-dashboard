@@ -68,6 +68,7 @@ export default {
     build() { return this.$store.state.currentBuild },
     jobs() { return this.$store.state.currentBuildJobs },
     chartData() {
+      var now = new Date()
       var data = this.$store.state.builds.map(
         build => {
           return {

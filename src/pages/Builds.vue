@@ -41,6 +41,7 @@ export default {
   computed: {
     builds() { return this.$store.state.builds },
     chartData() {
+      var now = new Date()
       var data = this.$store.state.builds.map(
         build => {
           return {
