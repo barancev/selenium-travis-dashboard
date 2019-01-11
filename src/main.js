@@ -56,7 +56,7 @@ const store = new Vuex.Store({
     reloadBuilds(context) {
       dbClient.query(
         q.Map(
-          q.Paginate(q.Match(q.Index("all_travis_builds"))),
+          q.Paginate(q.Match(q.Index("all_builds"))),
           q.Lambda("x", q.Get(q.Var("x")))
         )
       ).then(
@@ -75,13 +75,13 @@ const store = new Vuex.Store({
     setCurrentBuild(context, id) {
       context.dispatch('reloadBuilds')
       dbClient.query(
-        q.Get(q.Match(q.Index("travis_build_by_id"), Number(id)))
+        q.Get(q.Match(q.Index("build_by_id"), Number(id)))
       ).then(
         result => {
           context.commit('setCurrentBuild', result.data)
           dbClient.query(
             q.Map(
-              q.Paginate(q.Match(q.Index("travis_jobs_by_build_id"), result.data.id)),
+              q.Paginate(q.Match(q.Index("jobs_by_build_id"), result.data.id)),
               q.Lambda("x", q.Get(q.Var("x")))
             )
           ).then(
@@ -105,7 +105,7 @@ const store = new Vuex.Store({
       let job_id = Number(params.id)
       let loadJobHistory = params.loadJobHistory
       dbClient.query(
-        q.Get(q.Match(q.Index("travis_job_by_id"), job_id))
+        q.Get(q.Match(q.Index("job_by_id"), job_id))
       ).then(
         result => {
           var job = result.data
@@ -113,7 +113,7 @@ const store = new Vuex.Store({
           context.dispatch('setCurrentBuild', job.build)
           dbClient.query(
             q.Map(
-              q.Paginate(q.Match(q.Index("test_runs_by_job_id"), job_id)),
+              q.Paginate(q.Match(q.Index("testcases_by_job_id"), job_id), { size: 1024 }),
               q.Lambda("x", q.Get(q.Var("x")))
             )
           ).then(
@@ -174,10 +174,11 @@ const store = new Vuex.Store({
             q.Intersection(
               q.Join(
                 q.Match(q.Index("job_ids_by_os_lang_env"), job.os, job.language, job.env[0]),
-                q.Index("test_runs_by_job_id")
+                q.Index("testcases_by_job_id")
               ),
-              q.Match(q.Index("test_runs_by_class_method"), testcase.testclass, testcase.testcase)
-            )
+              q.Match(q.Index("testcases_by_class_method"), testcase.testclass, testcase.testcase)
+            ),
+            { size: 1024 }
           ),
           q.Lambda("x", q.Get(q.Var("x")))
         )
