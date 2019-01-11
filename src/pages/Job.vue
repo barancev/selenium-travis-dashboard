@@ -5,7 +5,7 @@
     <div id="content">
       <div id="metadata" v-if="job">
         <div id="commit-info">
-          <commit :target="job"></commit>
+          <commit :target="build"></commit>
         </div>
         <div id="build-info" v-if="build">
           <state-icon :status="build.state"></state-icon><span class="info">Build #{{build.number}}</span>
