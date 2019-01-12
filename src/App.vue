@@ -69,7 +69,7 @@ td.can-wrap {
 }
 
 .fas, .fab, .far {
-  padding-right: 5px;
+  margin-right: 5px;
 }
 
 #header {

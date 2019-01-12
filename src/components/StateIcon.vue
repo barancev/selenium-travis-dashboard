@@ -1,8 +1,8 @@
 <template>
   <div class="icon">
-    <template v-if="target.state === 'created'"><i class="fas fa-hourglass fa-fw"></i></template>
-    <template v-if="target.state === 'pending'"><i class="fas fa-hourglass fa-fw"></i></template>
-    <template v-if="target.state === 'received'"><i class="fas fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'created'"><i class="far fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'pending'"><i class="far fa-hourglass fa-fw"></i></template>
+    <template v-if="target.state === 'received'"><i class="far fa-hourglass fa-fw"></i></template>
     <template v-if="target.state === 'started'"><i class="fas fa-spinner fa-spin fa-fw"></i></template>
     <template v-if="target.state === 'running'"><i class="fas fa-spinner fa-spin fa-fw"></i></template>
     <template v-if="target.state === 'passed'"><i class="fas fa-check fa-fw"></i></template>
