@@ -2,15 +2,9 @@
   <div class="flex">
     <builds-sidebar></builds-sidebar>
     <div id="content">
-      <div id="metadata" v-if="build">
-        <div id="commit-info">
-          <commit :target="build"></commit>
-        </div>
-        <div id="build-info">
-          <span :class="build.state" class="build-number"><state-icon :target="build"></state-icon><a :href="'https://travis-ci.org/SeleniumHQ/selenium/builds/'+build.id">Build #{{build.number}}</a></span>
-          <duration :start="build.started_at" :finish="build.finished_at"></duration>
-          <datetime :value="build.started_at"></datetime>
-        </div>        
+      <div id="metadata">
+        <commit :target="build" v-if="build"></commit>
+        <build-info :build="build" v-if="build"></build-info>
       </div>
       <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="chartData" :current="id" route-to="/build"></duration-chart>
       <div id="table-jobs">
@@ -41,14 +35,14 @@
 
 <script>
 import Commit from '../components/Commit.vue'
+import BuildInfo from '../components/BuildInfo.vue'
+import BuildsSidebar from '../components/BuildsSidebar.vue'
+import DurationChart from '../components/DurationChart.vue'
 import StateIcon from '../components/StateIcon.vue'
-import Datetime from '../components/Datetime.vue'
 import Duration from '../components/Duration.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
 import Environment from '../components/Environment.vue'
-import BuildsSidebar from '../components/BuildsSidebar.vue'
-import DurationChart from '../components/DurationChart.vue'
 
 export default {
   name: 'Build',
@@ -84,7 +78,7 @@ export default {
     }
   },
   components: {
-    Commit, StateIcon, Datetime, Duration, OsIcon, LanguageIcon, Environment, BuildsSidebar, DurationChart
+    Commit, BuildInfo, BuildsSidebar, DurationChart, StateIcon, Duration, OsIcon, LanguageIcon, Environment
   },
   methods: {
     selectJob(id) {

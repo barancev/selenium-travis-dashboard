@@ -7,18 +7,14 @@
           <div class="modal-header">
             <h3>Test Results History</h3>
           </div>
-
           <div class="modal-body">
             <div class="metadata">
-              <os-icon :os="current.os"></os-icon>
-              <language-icon :language="current.language"></language-icon>
-              <environment :env="current.env"></environment>
+              <job-info :job="currentJob"></job-info>
               <div><i class="fas fa-tasks"></i><test-class :name="testcase.testclass"></test-class>.{{ testcase.testcase }}</div>
             </div>
             <div id="test-result-history"></div>
           </div>
           <div class="exception">{{ testcase.stacktrace }}</div>
-
           <div class="modal-footer"></div>
         </div>
       </div>
@@ -27,6 +23,7 @@
 </template>
 
 <script>
+import JobInfo from '../components/JobInfo.vue'
 import TestClass from '../components/TestClass.vue'
 import OsIcon from '../components/OsIcon.vue'
 import LanguageIcon from '../components/LanguageIcon.vue'
@@ -39,7 +36,7 @@ export default {
   props: {
     testcase: Object,
     data: Array,
-    current: Object,
+    currentJob: Object,
   },
   data: function() {
     return { exception: null }
@@ -48,12 +45,12 @@ export default {
     data(old_value, new_value) {
       this.repaint()
     },
-    current(old_value, new_value) {
+    currentJob(old_value, new_value) {
       this.repaint()
     },
   },
   components: {
-    TestClass, OsIcon, LanguageIcon, Environment
+    TestClass, OsIcon, LanguageIcon, Environment, JobInfo
   },
   methods: {
     repaint() {
@@ -71,7 +68,7 @@ export default {
       g.selectAll('rect')
         .data(this.data)
         .enter().append('rect')
-        .attr("class", d => d.job_id === this.current.id ? "active" : "")
+        .attr("class", d => d.job_id === this.currentJob.id ? "active" : "")
         .attr('x', d => x(d.job_id))
         .attr('y', d => 0)
         .attr('width', 18)
