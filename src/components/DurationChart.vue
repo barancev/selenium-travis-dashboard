@@ -18,7 +18,7 @@ export default {
     routeTo: String,
   },
   watch: {
-    current(old_value, new_value) {
+    current() {
       this.repaint()
     }
   },
@@ -64,7 +64,7 @@ export default {
             .style('display', 'inline-block')
             .html(`${this.label} #${d.number}<br/>${d.durationLabel}`);
         })
-        .on('mouseout', d => tooltip.style('display', 'none'))
+        .on('mouseout', () => tooltip.style('display', 'none'))
         .on('click', d => {
           tooltip.style('display', 'none')
           this.$router.push(`${this.routeTo}/${d.id}`)

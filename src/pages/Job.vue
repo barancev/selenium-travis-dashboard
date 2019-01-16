@@ -64,7 +64,7 @@ export default {
     return { showTestResults: false, testcase: null }
   },
   watch: {
-    '$route' (to, from) {
+    '$route' (to) {
       this.$store.commit('setCurrentJobTests', [])
       this.$store.commit('setCurrentJobHistory', [])
       this.$store.dispatch('setCurrentJob', { id: to.params.id, loadJobHistory: true })
@@ -81,6 +81,7 @@ export default {
     job() { return this.$store.state.currentJob },
     testClasses() { return this.$store.state.currentJobTestClasses },
     chartData() {
+      let now = new Date()
       var data = this.$store.state.currentJobHistory.map(
         job => {
           return {

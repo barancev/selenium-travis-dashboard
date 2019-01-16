@@ -11,7 +11,6 @@
 
 <script>
 import StateIcon from '../components/StateIcon.vue'
-import Duration from '../components/Duration.vue'
 import Datetime from '../components/Datetime.vue'
 
 export default {
@@ -21,7 +20,7 @@ export default {
     clickable: String
   },
   components: {
-    StateIcon, Duration, Datetime
+    StateIcon, Datetime
   },
   computed: {
     isClickable() { return this.clickable === 'true' }
