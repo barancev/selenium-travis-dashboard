@@ -1,7 +1,6 @@
 <template>
   <div class="flex">
     <div id="content">
-      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="chartData" route-to="/build"></duration-chart>
       <div id="table-builds">
         <table>
           <thead>

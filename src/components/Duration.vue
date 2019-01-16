@@ -1,6 +1,6 @@
 <template>
   <span>
-    <i class="far fa-clock fa-fw"></i>{{duration}} sec
+    <i class="far fa-clock fa-fw"></i>{{duration}}
   </span>
 </template>
 
@@ -15,8 +15,11 @@ export default {
     duration: function() {
       let startDate = Date.parse(this.start)
       let finishDate = this.finish ? Date.parse(this.finish) : new Date()
-      return (finishDate - startDate) / 1000
-    }
+      let duration = Math.floor((finishDate - startDate) / 1000)
+      let minutes = Math.floor(duration / 60)
+      let seconds = duration % 60
+      return (minutes > 0 ? minutes + ' min ' : '') + seconds + ' sec'
+    },
   }
 }
 </script>

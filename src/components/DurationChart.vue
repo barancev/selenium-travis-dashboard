@@ -24,6 +24,14 @@ export default {
   },
   methods: {
     repaint() {
+      var durationLabel = function (duration) {
+        let minutes = Math.floor(duration / 60)
+        let seconds = duration % 60
+        return (minutes > 0 ? minutes + ' min ' : '') + seconds + ' sec'
+      }
+      this.data.forEach(item => {
+        item.durationLabel = durationLabel(item.duration)
+      })
       d3.select('#duration-history').select('svg').remove()
       var colours = {
         failed: 'red', errored: 'red',
@@ -54,7 +62,7 @@ export default {
             .style('left', d3.event.pageX + 10 + 'px')
             .style('top', d3.event.pageY - 70 + 'px')
             .style('display', 'inline-block')
-            .html(`${this.label} #${d.number}<br/>${d.duration} sec`);
+            .html(`${this.label} #${d.number}<br/>${d.durationLabel}`);
         })
         .on('mouseout', d => tooltip.style('display', 'none'))
         .on('click', d => {

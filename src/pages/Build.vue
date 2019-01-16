@@ -6,7 +6,6 @@
         <commit :target="build" v-if="build"></commit>
         <build-info :build="build" v-if="build"></build-info>
       </div>
-      <duration-chart v-if="builds.length" label="Build" title="Build Duration History" :data="chartData" :current="id" route-to="/build"></duration-chart>
       <div id="table-jobs">
         <table>
           <thead>

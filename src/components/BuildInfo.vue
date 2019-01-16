@@ -3,7 +3,6 @@
     <span :class="[build.state, { clickable: isClickable }]" @click="openBuild(build)">
       <state-icon :target="build"></state-icon>Build #{{build.number}}
     </span>
-    <duration :start="build.started_at" :finish="build.finished_at"></duration>
     <datetime :value="build.started_at"></datetime>
     <a class="external-link" title="Open this build in Travis" :href="'https://travis-ci.org/SeleniumHQ/selenium/build/'+build.id" target="_new"><i class="fas fa-external-link-alt fa-fw"></i></a>
   </div>
