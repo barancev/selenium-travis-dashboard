@@ -1,6 +1,6 @@
 <template>
   <span>
-    <i class="far fa-calendar fa-fw"></i>{{value}}
+    <i class="far fa-calendar fa-fw"></i>{{ new Date(Date.parse(value)).toLocaleString() }}
   </span>
 </template>
 
