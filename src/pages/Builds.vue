@@ -6,7 +6,6 @@
           <thead>
           <tr>
             <th>Build</th>
-            <th>Duration</th>
             <th>Started At</th>
             <th>Commit</th>
           </tr>
@@ -14,7 +13,6 @@
           <tbody>
             <tr v-for="build in builds" :key="build.id" @click="selectBuild(build.id)">
               <td :class="build.state" :title="build.state"><state-icon :target="build"></state-icon>#{{build.number}}</td>
-              <td><duration :start="build.started_at" :finish="build.finished_at"></duration></td>
               <td><datetime :value="build.started_at"></datetime></td>
               <td class="can-wrap"><commit :target="build"></commit></td>
             </tr>
