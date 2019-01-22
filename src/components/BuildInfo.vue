@@ -4,7 +4,7 @@
       <state-icon :target="build"></state-icon>Build #{{build.number}}
     </span>
     <datetime :value="build.started_at"></datetime>
-    <a class="external-link" title="Open this build in Travis" :href="'https://travis-ci.org/SeleniumHQ/selenium/build/'+build.id" target="_new"><i class="fas fa-external-link-alt fa-fw"></i></a>
+    <a class="external-link" title="Open this build in Travis" :href="'https://travis-ci.org/SeleniumHQ/selenium/builds/'+build.id" target="_new"><i class="fas fa-external-link-alt fa-fw"></i></a>
   </div>
 
 </template>
