@@ -145,7 +145,7 @@ const store = new Vuex.Store({
             context.commit('setCurrentJobHistory', [])
             dbClient.query(
               q.Map(
-                q.Paginate(q.Match(q.Index("jobs_by_os_lang_env"), job.os, job.language, job.env[0])),
+                q.Paginate(q.Match(q.Index("jobs_by_os_lang_env"), job.os, job.language, job.env[0]), { before: null, size: 50 }),
                 q.Lambda("x", q.Get(q.Var("x")))
               )
             ).then(
