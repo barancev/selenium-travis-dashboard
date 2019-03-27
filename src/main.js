@@ -56,7 +56,7 @@ const store = new Vuex.Store({
     reloadBuilds(context) {
       dbClient.query(
         q.Map(
-          q.Paginate(q.Match(q.Index("all_builds")), { before: null, size: 30 }),
+          q.Paginate(q.Match(q.Index("all_builds")), { before: null, size: 100 }),
           q.Lambda("x", q.Get(q.Var("x")))
         )
       ).then(
