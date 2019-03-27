@@ -178,7 +178,7 @@ const store = new Vuex.Store({
               ),
               q.Match(q.Index("testcases_by_class_method"), testcase.testclass, testcase.testcase)
             ),
-            { size: 1024 }
+            { before: null, size: 50 }
           ),
           q.Lambda("x", q.Get(q.Var("x")))
         )
